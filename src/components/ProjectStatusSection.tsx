@@ -14,42 +14,32 @@ const statusSteps: StatusStep[] = [
   {
     id: 'pending',
     label: 'Pendente',
-    description: 'Projeto foi iniciado e aguardando início dos trabalhos',
+    description: 'Seu projeto foi iniciado e está aguardando o início dos trabalhos',
   },
   {
-    id: 'preparing_images',
-    label: 'Preparando Imagens',
-    description: 'Equipe está preparando e otimizando todas as imagens necessárias',
+    id: 'development',
+    label: 'Desenvolvimento',
+    description: 'Estamos preparando as imagens e desenvolvendo seu aplicativo',
   },
   {
-    id: 'configuring_firebase',
-    label: 'Configurando Firebase',
-    description: 'Configuração do Firebase e integração com os serviços',
-  },
-  {
-    id: 'admin_panel_delivered',
-    label: 'Painel Admin Entregue',
+    id: 'panel_delivered',
+    label: 'Painel Entregue',
     description: 'Painel administrativo foi entregue e está pronto para uso',
   },
   {
-    id: 'testing_app',
-    label: 'Testando App',
-    description: 'Aplicativos estão sendo testados para garantir qualidade',
+    id: 'testing_submission',
+    label: 'Testes e Envio',
+    description: 'Testando os aplicativos e enviando para Play Store e App Store',
   },
   {
-    id: 'submitted_playstore',
-    label: 'Enviado para Play Store',
-    description: 'Aplicativo Android foi submetido à Play Store',
-  },
-  {
-    id: 'submitted_appstore',
-    label: 'Enviado para App Store',
-    description: 'Aplicativo iOS foi submetido à App Store',
+    id: 'under_review',
+    label: 'Em Análise',
+    description: 'Aplicativos estão em análise pelas lojas (Play Store e App Store)',
   },
   {
     id: 'completed',
-    label: 'Completo',
-    description: 'Projeto finalizado e aplicativos publicados nas lojas',
+    label: 'Concluído',
+    description: 'Projeto finalizado! Seus aplicativos estão publicados e disponíveis',
   },
 ];
 

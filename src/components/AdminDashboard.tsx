@@ -361,13 +361,11 @@ export default function AdminDashboard() {
                             className="text-xs border border-gray-300 rounded-lg px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                           >
                             <option value="pending">Pendente</option>
-                            <option value="preparing_images">Preparando Imagens</option>
-                            <option value="configuring_firebase">Configurando Firebase</option>
-                            <option value="admin_panel_delivered">Painel Admin Entregue</option>
-                            <option value="testing_app">Testando App</option>
-                            <option value="submitted_playstore">Enviado Play Store</option>
-                            <option value="submitted_appstore">Enviado App Store</option>
-                            <option value="completed">Completo</option>
+                            <option value="development">Desenvolvimento</option>
+                            <option value="panel_delivered">Painel Entregue</option>
+                            <option value="testing_submission">Testes e Envio</option>
+                            <option value="under_review">Em Análise</option>
+                            <option value="completed">Concluído</option>
                           </select>
                         ) : (
                           <span className="text-xs text-gray-400">N/A</span>
