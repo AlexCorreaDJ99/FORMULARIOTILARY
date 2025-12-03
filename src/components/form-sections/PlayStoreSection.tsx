@@ -155,6 +155,20 @@ export default function PlayStoreSection({ form, onSave }: Props) {
             Logos dos Aplicativos
           </h3>
 
+          <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+            <h4 className="font-semibold text-blue-900 mb-3">Onde essas logos aparecem na Play Store:</h4>
+            <div className="space-y-2 text-sm text-blue-800">
+              <div className="flex items-start gap-2">
+                <span className="font-bold min-w-[140px]">Logo 1024x1024:</span>
+                <span>Aparece como ÍCONE do aplicativo na Play Store e na tela do celular após instalação</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-bold min-w-[140px]">Logo 352x68:</span>
+                <span>Aparece no CABEÇALHO da página do app na Play Store (banner horizontal no topo)</span>
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-6">
             <div>
               <h4 className="font-medium text-gray-900 mb-3">App Motorista</h4>
@@ -212,6 +226,20 @@ export default function PlayStoreSection({ form, onSave }: Props) {
 
         <div className="border-t pt-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Imagens de Funcionalidades</h3>
+
+          <div className="mb-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+            <h4 className="font-semibold text-green-900 mb-3">Onde essas imagens aparecem na Play Store:</h4>
+            <div className="space-y-2 text-sm text-green-800">
+              <div className="flex items-start gap-2">
+                <span className="font-bold min-w-[120px]">Screenshots:</span>
+                <span>Aparecem na GALERIA DE IMAGENS da página do app, mostrando as telas e funcionalidades do aplicativo. São as primeiras imagens que o usuário vê ao acessar sua página.</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="font-bold min-w-[120px]">Banner:</span>
+                <span>Aparece como BANNER PROMOCIONAL em destaque no topo da página do app, geralmente mostrando o visual ou principais benefícios do aplicativo.</span>
+              </div>
+            </div>
+          </div>
 
           <div className="space-y-6">
             <div>

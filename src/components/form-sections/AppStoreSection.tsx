@@ -110,6 +110,31 @@ export default function AppStoreSection({ form, onSave }: Props) {
         <div className="border-t pt-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Screenshots para iPhone</h3>
 
+          <div className="mb-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg">
+            <h4 className="font-semibold text-purple-900 mb-3">Onde essas screenshots aparecem na App Store:</h4>
+            <div className="space-y-3 text-sm text-purple-800">
+              <p className="leading-relaxed">
+                As screenshots aparecem na <strong>GALERIA DE PRÉVIA</strong> da página do seu app na App Store. São as imagens que os usuários veem ao rolar a página, mostrando as principais telas e funcionalidades do aplicativo.
+              </p>
+              <div className="bg-white/60 p-3 rounded-lg border border-purple-200">
+                <p className="font-medium mb-1">Por que dois tamanhos diferentes?</p>
+                <div className="space-y-1">
+                  <div className="flex items-start gap-2">
+                    <span className="font-bold">6.5" (1242x2688):</span>
+                    <span>Para iPhones com tela de 6.5 polegadas (iPhone 11 Pro Max, 12 Pro Max, 13 Pro Max, 14 Plus)</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-bold">6.9" (1320x2868):</span>
+                    <span>Para iPhones com tela de 6.9 polegadas (iPhone 15 Pro Max, 16 Plus, 16 Pro Max - modelos mais recentes)</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-xs italic">
+                💡 A Apple exige screenshots para diferentes tamanhos de tela para garantir que as imagens fiquem perfeitas em todos os modelos de iPhone.
+              </p>
+            </div>
+          </div>
+
           <div className="space-y-6">
             <div>
               <h4 className="font-medium text-gray-900 mb-3">App Motorista</h4>
