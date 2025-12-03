@@ -54,7 +54,10 @@ export default function PlayStoreSection({ form, onSave }: Props) {
         </div>
         <button
           onClick={handleManualSave}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+          style={{ backgroundColor: '#e40033' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2002a'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e40033'}
         >
           <Save className="w-4 h-4" />
           Salvar Agora

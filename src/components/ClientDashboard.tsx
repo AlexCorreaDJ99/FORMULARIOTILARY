@@ -157,13 +157,16 @@ export default function ClientDashboard() {
                 </div>
                 <div className="w-16 bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-blue-600 h-2 rounded-full transition-all"
-                    style={{ width: `${form.progress_percentage}%` }}
+                    className="h-2 rounded-full transition-all"
+                    style={{
+                      width: `${form.progress_percentage}%`,
+                      backgroundColor: '#e40033'
+                    }}
                   />
                 </div>
               </div>
               {saving && (
-                <div className="flex items-center gap-2 text-blue-600 text-sm">
+                <div className="flex items-center gap-2 text-sm" style={{ color: '#e40033' }}>
                   <Save className="w-4 h-4 animate-pulse" />
                   Salvando...
                 </div>

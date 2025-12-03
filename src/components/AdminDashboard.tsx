@@ -289,7 +289,10 @@ export default function AdminDashboard() {
               </div>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors"
+                style={{ backgroundColor: '#e40033' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2002a'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e40033'}
               >
                 <Plus className="w-5 h-5" />
                 Novo Cliente
@@ -344,8 +347,11 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-2">
                           <div className="w-24 bg-gray-200 rounded-full h-2">
                             <div
-                              className="bg-blue-600 h-2 rounded-full transition-all"
-                              style={{ width: `${client.form?.progress_percentage || 0}%` }}
+                              className="h-2 rounded-full transition-all"
+                              style={{
+                                width: `${client.form?.progress_percentage || 0}%`,
+                                backgroundColor: '#e40033'
+                              }}
                             />
                           </div>
                           <span className="text-sm text-gray-600">

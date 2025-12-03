@@ -40,11 +40,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-50 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-8">
           <div className="mb-4">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">TILARY</h1>
+            <h1 className="text-5xl font-bold" style={{ color: '#e40033' }}>TILARY</h1>
           </div>
           <p className="text-gray-600 mt-2">Sistema de Gestão de Conteúdo</p>
         </div>
@@ -54,9 +54,10 @@ export default function Login() {
             onClick={() => setIsAdminLogin(false)}
             className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
               !isAdminLogin
-                ? 'bg-white text-blue-600 shadow-sm'
+                ? 'bg-white shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
+            style={!isAdminLogin ? { color: '#e40033' } : {}}
           >
             Cliente
           </button>
@@ -64,9 +65,10 @@ export default function Login() {
             onClick={() => setIsAdminLogin(true)}
             className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
               isAdminLogin
-                ? 'bg-white text-blue-600 shadow-sm'
+                ? 'bg-white shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
             }`}
+            style={isAdminLogin ? { color: '#e40033' } : {}}
           >
             Administrador
           </button>
@@ -88,7 +90,10 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
+                style={{ outlineColor: '#e40033' }}
+                onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(228, 0, 51, 0.1)'}
+                onBlur={(e) => e.target.style.boxShadow = ''}
                 placeholder="admin@exemplo.com"
                 required
               />
@@ -101,7 +106,10 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
+                style={{ outlineColor: '#e40033' }}
+                onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(228, 0, 51, 0.1)'}
+                onBlur={(e) => e.target.style.boxShadow = ''}
                 placeholder="••••••••"
                 required
               />
@@ -109,7 +117,10 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#e40033' }}
+              onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = '#c2002a')}
+              onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = '#e40033')}
             >
               {loading ? 'Entrando...' : 'Entrar como Admin'}
             </button>
@@ -124,7 +135,10 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
+                style={{ outlineColor: '#e40033' }}
+                onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(228, 0, 51, 0.1)'}
+                onBlur={(e) => e.target.style.boxShadow = ''}
                 placeholder="seu@email.com"
                 required
               />
@@ -138,7 +152,10 @@ export default function Login() {
                 type="text"
                 value={accessCode}
                 onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent font-mono"
+                style={{ outlineColor: '#e40033' }}
+                onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(228, 0, 51, 0.1)'}
+                onBlur={(e) => e.target.style.boxShadow = ''}
                 placeholder="ABC123XYZ"
                 required
               />
@@ -146,7 +163,10 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#e40033' }}
+              onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = '#c2002a')}
+              onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = '#e40033')}
             >
               {loading ? 'Verificando...' : 'Acessar Formulário'}
             </button>

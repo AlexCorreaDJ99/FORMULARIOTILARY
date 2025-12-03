@@ -135,7 +135,10 @@ export default function CreateAdminModal({ onClose, onSuccess }: CreateAdminModa
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 text-white rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              style={!loading ? { backgroundColor: '#e40033' } : {}}
+              onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = '#c2002a')}
+              onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = '#e40033')}
             >
               {loading ? 'Criando...' : 'Criar Admin'}
             </button>
