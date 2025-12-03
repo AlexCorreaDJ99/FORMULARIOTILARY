@@ -116,7 +116,7 @@ export default function AppStoreSection({ form, onSave }: Props) {
               <div className="space-y-4">
                 <ImageUpload
                   formId={form.id}
-                  label='Screenshots 1242x2688 - 6.5" (4-8 imagens, PNG)'
+                  label='Screenshots 1242x2688 PX - 6.5" (4-8 imagens, PNG)'
                   imageType="feature"
                   appType="driver"
                   storeType="appstore"
@@ -128,7 +128,7 @@ export default function AppStoreSection({ form, onSave }: Props) {
                 />
                 <ImageUpload
                   formId={form.id}
-                  label='Screenshots 1320x2868 - 6.9" (4-8 imagens, PNG)'
+                  label='Screenshots 1320x2868 PX - 6.9" (4-8 imagens, PNG)'
                   imageType="feature"
                   appType="driver"
                   storeType="appstore"
@@ -146,7 +146,7 @@ export default function AppStoreSection({ form, onSave }: Props) {
               <div className="space-y-4">
                 <ImageUpload
                   formId={form.id}
-                  label='Screenshots 1242x2688 - 6.5" (4-8 imagens, PNG)'
+                  label='Screenshots 1242x2688 PX - 6.5" (4-8 imagens, PNG)'
                   imageType="feature"
                   appType="passenger"
                   storeType="appstore"
@@ -158,7 +158,7 @@ export default function AppStoreSection({ form, onSave }: Props) {
                 />
                 <ImageUpload
                   formId={form.id}
-                  label='Screenshots 1320x2868 - 6.9" (4-8 imagens, PNG)'
+                  label='Screenshots 1320x2868 PX - 6.9" (4-8 imagens, PNG)'
                   imageType="feature"
                   appType="passenger"
                   storeType="appstore"

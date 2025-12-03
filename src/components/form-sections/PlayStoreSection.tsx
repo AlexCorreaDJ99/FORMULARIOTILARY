@@ -161,7 +161,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <ImageUpload
                   formId={form.id}
-                  label="Logo 1024x1024 (PNG transparente)"
+                  label="Logo 1024x1024 PX (PNG)"
                   imageType="logo_1024"
                   appType="driver"
                   storeType="playstore"
@@ -171,7 +171,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
                 />
                 <ImageUpload
                   formId={form.id}
-                  label="Logo 352x68 (PNG transparente)"
+                  label="Logo 352x68 PX (PNG)"
                   imageType="logo_352"
                   appType="driver"
                   storeType="playstore"
@@ -187,7 +187,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
               <div className="grid grid-cols-2 gap-4">
                 <ImageUpload
                   formId={form.id}
-                  label="Logo 1024x1024 (PNG transparente)"
+                  label="Logo 1024x1024 PX (PNG)"
                   imageType="logo_1024"
                   appType="passenger"
                   storeType="playstore"
@@ -197,7 +197,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
                 />
                 <ImageUpload
                   formId={form.id}
-                  label="Logo 352x68 (PNG transparente)"
+                  label="Logo 352x68 PX (PNG)"
                   imageType="logo_352"
                   appType="passenger"
                   storeType="playstore"
@@ -218,7 +218,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
               <h4 className="font-medium text-gray-900 mb-3">App Motorista</h4>
               <ImageUpload
                 formId={form.id}
-                label="Screenshots 1243x2486 (4-8 imagens, PNG)"
+                label="Screenshots 1243x2486 PX (4-8 imagens, PNG)"
                 imageType="feature"
                 appType="driver"
                 storeType="playstore"
@@ -230,7 +230,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
               />
               <ImageUpload
                 formId={form.id}
-                label="Banner 1024x500 (PNG)"
+                label="Banner 1024x500 PX (PNG)"
                 imageType="banner_1024"
                 appType="driver"
                 storeType="playstore"
@@ -243,7 +243,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
               <h4 className="font-medium text-gray-900 mb-3">App Passageiro</h4>
               <ImageUpload
                 formId={form.id}
-                label="Screenshots 1243x2486 (4-8 imagens, PNG)"
+                label="Screenshots 1243x2486 PX (4-8 imagens, PNG)"
                 imageType="feature"
                 appType="passenger"
                 storeType="playstore"
@@ -255,7 +255,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
               />
               <ImageUpload
                 formId={form.id}
-                label="Banner 1024x500 (PNG)"
+                label="Banner 1024x500 PX (PNG)"
                 imageType="banner_1024"
                 appType="passenger"
                 storeType="playstore"
