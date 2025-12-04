@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase, FormImage } from '../lib/supabase';
-import { Upload, X, CheckCircle, AlertCircle, Image as ImageIcon } from 'lucide-react';
+import { supabase, FormImage, AppForm } from '../lib/supabase';
+import { Upload, X, CheckCircle, AlertCircle, Image as ImageIcon, Download, Info } from 'lucide-react';
 
 type Props = {
   formId: string;
@@ -14,6 +14,8 @@ type Props = {
   multiple?: boolean;
   minImages?: number;
   maxImages?: number;
+  imageSource?: 'tilary' | 'custom';
+  onImageSourceChange?: (source: 'tilary' | 'custom') => Promise<void>;
 };
 
 export default function ImageUpload({
@@ -28,14 +30,50 @@ export default function ImageUpload({
   multiple = false,
   minImages = 1,
   maxImages = 1,
+  imageSource = 'custom',
+  onImageSourceChange,
 }: Props) {
   const [images, setImages] = useState<FormImage[]>([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [localImageSource, setLocalImageSource] = useState<'tilary' | 'custom'>(imageSource);
 
   useEffect(() => {
     loadImages();
   }, [formId, imageType, appType, storeType]);
+
+  useEffect(() => {
+    setLocalImageSource(imageSource);
+  }, [imageSource]);
+
+  const handleImageSourceChange = async (source: 'tilary' | 'custom') => {
+    if (onImageSourceChange) {
+      await onImageSourceChange(source);
+    }
+    setLocalImageSource(source);
+  };
+
+  const getTilaryImageUrl = () => {
+    if (storeType === 'playstore' && imageType === 'feature') {
+      return '/PLAY STORE.zip';
+    }
+    if (storeType === 'appstore') {
+      return '/Padrao Iphone.zip';
+    }
+    return null;
+  };
+
+  const handleDownloadTilaryImages = () => {
+    const url = getTilaryImageUrl();
+    if (url) {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = url.split('/').pop() || 'tilary-images.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   const loadImages = async () => {
     try {
@@ -179,6 +217,9 @@ export default function ImageUpload({
   const canUploadMore = multiple ? images.length < maxImages : images.length === 0;
   const imageCount = images.length;
 
+  const tilaryImageUrl = getTilaryImageUrl();
+  const hasTilaryImages = tilaryImageUrl !== null;
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -191,6 +232,70 @@ export default function ImageUpload({
         )}
       </div>
 
+      {hasTilaryImages && onImageSourceChange && (
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <Info className="w-4 h-4" />
+            <span>Escolha a origem das imagens:</span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => handleImageSourceChange('tilary')}
+              className={`p-3 border-2 rounded-lg transition-all ${
+                localImageSource === 'tilary'
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-gray-300 hover:border-red-300 bg-white'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <ImageIcon className="w-6 h-6" style={{ color: localImageSource === 'tilary' ? '#e40033' : '#9ca3af' }} />
+                <span className="text-sm font-medium">Imagens da Tilary</span>
+                <span className="text-xs text-gray-500">Use nossas imagens padrão</span>
+              </div>
+            </button>
+
+            <button
+              onClick={() => handleImageSourceChange('custom')}
+              className={`p-3 border-2 rounded-lg transition-all ${
+                localImageSource === 'custom'
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-gray-300 hover:border-red-300 bg-white'
+              }`}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <Upload className="w-6 h-6" style={{ color: localImageSource === 'custom' ? '#e40033' : '#9ca3af' }} />
+                <span className="text-sm font-medium">Minhas Imagens</span>
+                <span className="text-xs text-gray-500">Faça upload personalizado</span>
+              </div>
+            </button>
+          </div>
+
+          {localImageSource === 'tilary' && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="flex items-start gap-3">
+                <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm text-blue-900 font-medium mb-2">
+                    Imagens padrão da Tilary selecionadas
+                  </p>
+                  <p className="text-xs text-blue-800 mb-3">
+                    Baixe o pacote para visualizar as imagens antes de confirmar.
+                  </p>
+                  <button
+                    onClick={handleDownloadTilaryImages}
+                    className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    <Download className="w-4 h-4" />
+                    Baixar Imagens da Tilary
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {error && (
         <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-sm">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -198,8 +303,9 @@ export default function ImageUpload({
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3">
-        {images.map((image) => (
+      {localImageSource === 'custom' && (
+        <div className="grid grid-cols-2 gap-3">
+          {images.map((image) => (
           <div key={image.id} className="relative group border-2 border-green-200 rounded-lg overflow-hidden bg-green-50">
             <img
               src={image.file_url}
@@ -252,13 +358,16 @@ export default function ImageUpload({
             )}
           </label>
         )}
-      </div>
+        </div>
+      )}
 
-      <div className="text-xs text-gray-500 space-y-1">
-        <p>• Dimensões: {requiredDimensions.width}x{requiredDimensions.height} pixels</p>
-        <p>• Formato: {requiredFormat.toUpperCase()}</p>
-        {transparent && <p>• Fundo transparente obrigatório</p>}
-      </div>
+      {localImageSource === 'custom' && (
+        <div className="text-xs text-gray-500 space-y-1">
+          <p>• Dimensões: {requiredDimensions.width}x{requiredDimensions.height} pixels</p>
+          <p>• Formato: {requiredFormat.toUpperCase()}</p>
+          {transparent && <p>• Fundo transparente obrigatório</p>}
+        </div>
+      )}
     </div>
   );
 }

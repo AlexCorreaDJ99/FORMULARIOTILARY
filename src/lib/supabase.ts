@@ -40,6 +40,7 @@ export type AppForm = {
   meeting_date?: string;
   meeting_time?: string;
   store_owner?: 'tilary' | 'client';
+  image_source?: 'tilary' | 'custom';
   last_activity_date?: string;
   driver_app_name?: string;
   passenger_app_name?: string;

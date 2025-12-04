@@ -45,6 +45,10 @@ export default function PlayStoreSection({ form, onSave }: Props) {
     onSave(formData);
   };
 
+  const handleImageSourceChange = async (source: 'tilary' | 'custom') => {
+    await onSave({ image_source: source });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -258,6 +262,8 @@ export default function PlayStoreSection({ form, onSave }: Props) {
                 multiple={true}
                 minImages={4}
                 maxImages={8}
+                imageSource={form.image_source}
+                onImageSourceChange={handleImageSourceChange}
               />
               <ImageUpload
                 formId={form.id}
@@ -283,6 +289,8 @@ export default function PlayStoreSection({ form, onSave }: Props) {
                 multiple={true}
                 minImages={4}
                 maxImages={8}
+                imageSource={form.image_source}
+                onImageSourceChange={handleImageSourceChange}
               />
               <ImageUpload
                 formId={form.id}
