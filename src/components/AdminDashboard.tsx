@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, Client, AppForm } from '../lib/supabase';
-import { Plus, LogOut, Users, Eye, Trash2, RefreshCw, Download, UserPlus, Shield, Key, Calendar, X, Check, CheckCircle, FileText } from 'lucide-react';
+import { Plus, LogOut, Users, Eye, Trash2, RefreshCw, Download, UserPlus, Shield, Key, Calendar, X, Check, CheckCircle, FileText, Mail } from 'lucide-react';
 import CreateClientModal from './CreateClientModal';
 import CreateAdminModal from './CreateAdminModal';
 import EditAdminPasswordModal from './EditAdminPasswordModal';
+import EditAdminEmailModal from './EditAdminEmailModal';
 import NotificationBell from './NotificationBell';
 import NotesModal from './NotesModal';
 
@@ -29,6 +30,7 @@ export default function AdminDashboard() {
   const [showCreateAdminModal, setShowCreateAdminModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState<ClientWithForm | null>(null);
   const [editPasswordAdmin, setEditPasswordAdmin] = useState<AdminProfile | null>(null);
+  const [editEmailAdmin, setEditEmailAdmin] = useState<AdminProfile | null>(null);
   const [editingMeeting, setEditingMeeting] = useState<string | null>(null);
   const [meetingDate, setMeetingDate] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
@@ -638,14 +640,24 @@ export default function AdminDashboard() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={() => setEditPasswordAdmin(admin)}
-                          className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded inline-flex items-center gap-1"
-                          title="Alterar Senha"
-                        >
-                          <Key className="w-4 h-4" />
-                          <span className="text-sm">Alterar Senha</span>
-                        </button>
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => setEditEmailAdmin(admin)}
+                            className="text-green-600 hover:text-green-800 p-1 hover:bg-green-50 rounded inline-flex items-center gap-1"
+                            title="Alterar Email"
+                          >
+                            <Mail className="w-4 h-4" />
+                            <span className="text-sm">Alterar Email</span>
+                          </button>
+                          <button
+                            onClick={() => setEditPasswordAdmin(admin)}
+                            className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded inline-flex items-center gap-1"
+                            title="Alterar Senha"
+                          >
+                            <Key className="w-4 h-4" />
+                            <span className="text-sm">Alterar Senha</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -692,6 +704,20 @@ export default function AdminDashboard() {
           onSuccess={() => {
             setEditPasswordAdmin(null);
             alert('Senha alterada com sucesso!');
+          }}
+        />
+      )}
+
+      {editEmailAdmin && (
+        <EditAdminEmailModal
+          adminId={editEmailAdmin.id}
+          adminName={editEmailAdmin.name}
+          currentEmail={editEmailAdmin.email}
+          onClose={() => setEditEmailAdmin(null)}
+          onSuccess={() => {
+            setEditEmailAdmin(null);
+            loadAdmins();
+            alert('Email alterado com sucesso!');
           }}
         />
       )}
