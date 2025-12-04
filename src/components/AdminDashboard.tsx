@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, Client, AppForm } from '../lib/supabase';
-import { Plus, LogOut, Users, Eye, Trash2, RefreshCw, Download, UserPlus, Shield, Key, Calendar, X, Check, CheckCircle, FileText, Mail } from 'lucide-react';
+import { Plus, LogOut, Users, Eye, Trash2, RefreshCw, Download, UserPlus, Shield, Key, Calendar, X, Check, CheckCircle, FileText, Mail, ChevronLeft, ChevronRight } from 'lucide-react';
 import CreateClientModal from './CreateClientModal';
 import CreateAdminModal from './CreateAdminModal';
 import EditAdminPasswordModal from './EditAdminPasswordModal';
@@ -35,18 +35,31 @@ export default function AdminDashboard() {
   const [meetingDate, setMeetingDate] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
   const [notesClient, setNotesClient] = useState<ClientWithForm | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalClients, setTotalClients] = useState(0);
+  const itemsPerPage = 40;
 
   useEffect(() => {
     loadClients();
     loadAdmins();
-  }, []);
+  }, [currentPage]);
 
   const loadClients = async () => {
     try {
+      const { count } = await supabase
+        .from('clients')
+        .select('*', { count: 'exact', head: true });
+
+      setTotalClients(count || 0);
+
+      const from = (currentPage - 1) * itemsPerPage;
+      const to = from + itemsPerPage - 1;
+
       const { data: clientsData, error: clientsError } = await supabase
         .from('clients')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .range(from, to);
 
       if (clientsError) throw clientsError;
 
@@ -244,7 +257,12 @@ export default function AdminDashboard() {
         }
       }
 
-      loadClients();
+      if (clients.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      } else {
+        loadClients();
+      }
+
       alert('Cliente excluído com sucesso!');
     } catch (error) {
       console.error('Error deleting client:', error);
@@ -597,6 +615,40 @@ export default function AdminDashboard() {
                 </tbody>
               </table>
             </div>
+
+            {totalClients > itemsPerPage && (
+              <div className="flex items-center justify-between mt-6 px-4">
+                <div className="text-sm text-gray-600">
+                  Mostrando {((currentPage - 1) * itemsPerPage) + 1} a {Math.min(currentPage * itemsPerPage, totalClients)} de {totalClients} clientes
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="px-3 py-2 rounded-lg border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-1"
+                    style={{
+                      color: currentPage === 1 ? '#9ca3af' : '#e40033',
+                      borderColor: currentPage === 1 ? '#d1d5db' : '#e40033'
+                    }}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    Anterior
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(p => p + 1)}
+                    disabled={currentPage >= Math.ceil(totalClients / itemsPerPage)}
+                    className="px-3 py-2 rounded-lg border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-1"
+                    style={{
+                      color: currentPage >= Math.ceil(totalClients / itemsPerPage) ? '#9ca3af' : '#e40033',
+                      borderColor: currentPage >= Math.ceil(totalClients / itemsPerPage) ? '#d1d5db' : '#e40033'
+                    }}
+                  >
+                    Próxima
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
           </>
         ) : (
           <>
@@ -680,6 +732,7 @@ export default function AdminDashboard() {
           onClose={() => setShowCreateModal(false)}
           onSuccess={() => {
             setShowCreateModal(false);
+            setCurrentPage(1);
             loadClients();
           }}
         />
