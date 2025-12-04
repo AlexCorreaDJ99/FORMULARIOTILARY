@@ -291,6 +291,8 @@ export default function PlayStoreSection({ form, onSave }: Props) {
                 storeType="playstore"
                 requiredDimensions={{ width: 1024, height: 500 }}
                 requiredFormat="png"
+                imageSource={form.image_source}
+                onImageSourceChange={handleImageSourceChange}
               />
             </div>
 
@@ -318,6 +320,8 @@ export default function PlayStoreSection({ form, onSave }: Props) {
                 storeType="playstore"
                 requiredDimensions={{ width: 1024, height: 500 }}
                 requiredFormat="png"
+                imageSource={form.image_source}
+                onImageSourceChange={handleImageSourceChange}
               />
             </div>
           </div>

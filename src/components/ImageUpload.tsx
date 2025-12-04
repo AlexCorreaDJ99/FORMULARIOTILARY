@@ -87,7 +87,7 @@ export default function ImageUpload({
   };
 
   const hasTilaryImages = () => {
-    return (storeType === 'playstore' && imageType === 'feature') || storeType === 'appstore';
+    return (storeType === 'playstore' && (imageType === 'feature' || imageType === 'banner_1024')) || storeType === 'appstore';
   };
 
   const loadImages = async () => {
