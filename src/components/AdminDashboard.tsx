@@ -118,19 +118,9 @@ export default function AdminDashboard() {
 
   const handleUpdateProjectStatus = async (formId: string, newStatus: string) => {
     try {
-      const statusProgression: Record<string, string> = {
-        'pending': 'development',
-        'development': 'panel_delivered',
-        'panel_delivered': 'testing_submission',
-        'testing_submission': 'under_review',
-        'under_review': 'completed',
-      };
-
-      const finalStatus = statusProgression[newStatus] || newStatus;
-
       const { error } = await supabase
         .from('app_forms')
-        .update({ project_status: finalStatus })
+        .update({ project_status: newStatus })
         .eq('id', formId);
 
       if (error) throw error;
