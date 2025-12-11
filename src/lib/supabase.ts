@@ -40,7 +40,8 @@ export type AppForm = {
   meeting_scheduled?: boolean;
   meeting_date?: string;
   meeting_time?: string;
-  store_owner?: 'tilary' | 'client';
+  play_store_owner?: 'tilary' | 'client';
+  app_store_owner?: 'tilary' | 'client';
   image_source?: 'tilary' | 'custom';
   last_activity_date?: string;
   driver_app_name?: string;

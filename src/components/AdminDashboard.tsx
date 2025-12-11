@@ -118,9 +118,19 @@ export default function AdminDashboard() {
 
   const handleUpdateProjectStatus = async (formId: string, newStatus: string) => {
     try {
+      const statusProgression: Record<string, string> = {
+        'pending': 'development',
+        'development': 'panel_delivered',
+        'panel_delivered': 'testing_submission',
+        'testing_submission': 'under_review',
+        'under_review': 'completed',
+      };
+
+      const finalStatus = statusProgression[newStatus] || newStatus;
+
       const { error } = await supabase
         .from('app_forms')
-        .update({ project_status: newStatus })
+        .update({ project_status: finalStatus })
         .eq('id', formId);
 
       if (error) throw error;
@@ -471,15 +481,34 @@ export default function AdminDashboard() {
                           <span className="text-xs text-gray-400">N/A</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {client.form?.store_owner ? (
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            client.form.store_owner === 'tilary'
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-green-100 text-green-800'
-                          }`}>
-                            {client.form.store_owner === 'tilary' ? 'Tilary' : 'Cliente'}
-                          </span>
+                      <td className="px-6 py-4">
+                        {(client.form?.play_store_owner || client.form?.app_store_owner) ? (
+                          <div className="flex flex-col gap-1">
+                            {client.form?.play_store_owner && (
+                              <div className="flex items-center gap-1">
+                                <span className="text-xs text-gray-600">Play:</span>
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  client.form.play_store_owner === 'tilary'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {client.form.play_store_owner === 'tilary' ? 'Tilary' : 'Cliente'}
+                                </span>
+                              </div>
+                            )}
+                            {client.form?.app_store_owner && (
+                              <div className="flex items-center gap-1">
+                                <span className="text-xs text-gray-600">App:</span>
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  client.form.app_store_owner === 'tilary'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {client.form.app_store_owner === 'tilary' ? 'Tilary' : 'Cliente'}
+                                </span>
+                              </div>
+                            )}
+                          </div>
                         ) : (
                           <span className="text-xs text-gray-400">N/A</span>
                         )}
@@ -896,21 +925,27 @@ function ClientDetailsModal({ client, onClose }: { client: ClientWithForm; onClo
             <div className="space-y-4">
               <h4 className="font-bold text-gray-900 border-b pb-2">Dados do Formulário</h4>
 
-              {client.form.store_owner && (
+              {(client.form.play_store_owner || client.form.app_store_owner) && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <label className="text-sm font-medium text-blue-900 block mb-1">
-                    Proprietário das Lojas
+                  <label className="text-sm font-medium text-blue-900 block mb-2">
+                    Publicação nas Lojas
                   </label>
-                  <p className="text-blue-900 font-semibold">
-                    {client.form.store_owner === 'tilary'
-                      ? 'Lojas da Tilary'
-                      : 'Lojas do Cliente'}
-                  </p>
-                  <p className="text-xs text-blue-700 mt-1">
-                    {client.form.store_owner === 'tilary'
-                      ? 'Os apps serão publicados nas lojas da Tilary'
-                      : 'Os apps serão publicados nas lojas do próprio cliente'}
-                  </p>
+                  <div className="space-y-2">
+                    {client.form.play_store_owner && (
+                      <div>
+                        <p className="text-sm font-semibold text-blue-900">
+                          Play Store (Android): {client.form.play_store_owner === 'tilary' ? 'Conta da Tilary' : 'Conta do Cliente'}
+                        </p>
+                      </div>
+                    )}
+                    {client.form.app_store_owner && (
+                      <div>
+                        <p className="text-sm font-semibold text-blue-900">
+                          App Store (iOS): {client.form.app_store_owner === 'tilary' ? 'Conta da Tilary' : 'Conta do Cliente'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 

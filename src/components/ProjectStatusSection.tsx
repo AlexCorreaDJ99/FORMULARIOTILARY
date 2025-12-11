@@ -48,7 +48,10 @@ export default function ProjectStatusSection({ projectStatus }: ProjectStatusSec
 
   const getStepStatus = (stepIndex: number) => {
     if (stepIndex < currentStatusIndex) return 'completed';
-    if (stepIndex === currentStatusIndex) return 'current';
+    if (stepIndex === currentStatusIndex) {
+      if (projectStatus === 'completed') return 'completed';
+      return 'current';
+    }
     return 'pending';
   };
 
