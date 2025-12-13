@@ -51,14 +51,14 @@ export default function PlayStoreSection({ form, onSave }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Play Store (Android)</h2>
-          <p className="text-gray-600 mt-1">Informações e imagens para publicação na Google Play Store</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Play Store (Android)</h2>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Informações e imagens para publicação na Google Play Store</p>
         </div>
         <button
           onClick={handleManualSave}
-          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors whitespace-nowrap"
           style={{ backgroundColor: '#e40033' }}
           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2002a'}
           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e40033'}
@@ -197,7 +197,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
           <div className="space-y-6">
             <div>
               <h4 className="font-medium text-gray-900 mb-3">App Motorista</h4>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <ImageUpload
                   formId={form.id}
                   label="Logo 1024x1024 PX (PNG)"
@@ -223,7 +223,7 @@ export default function PlayStoreSection({ form, onSave }: Props) {
 
             <div>
               <h4 className="font-medium text-gray-900 mb-3">App Passageiro</h4>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <ImageUpload
                   formId={form.id}
                   label="Logo 1024x1024 PX (PNG)"

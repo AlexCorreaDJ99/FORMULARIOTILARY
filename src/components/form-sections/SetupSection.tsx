@@ -45,14 +45,14 @@ export default function SetupSection({ form, onSave }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Setup Inicial dos Aplicativos</h2>
-          <p className="text-gray-600 mt-1">Informações básicas sobre os aplicativos</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Setup Inicial dos Aplicativos</h2>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Informações básicas sobre os aplicativos</p>
         </div>
         <button
           onClick={handleManualSave}
-          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors whitespace-nowrap"
           style={{ backgroundColor: '#e40033' }}
           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2002a'}
           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e40033'}
@@ -63,7 +63,7 @@ export default function SetupSection({ form, onSave }: Props) {
       </div>
 
       <div className="space-y-6 pt-4">
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Nome do App Motorista *

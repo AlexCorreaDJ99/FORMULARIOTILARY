@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, AppForm, Client } from '../lib/supabase';
-import { LogOut, Save, CheckCircle } from 'lucide-react';
+import { LogOut, Save, CheckCircle, Menu, X } from 'lucide-react';
 import SetupSection from './form-sections/SetupSection';
 import PlayStoreSection from './form-sections/PlayStoreSection';
 import AppStoreSection from './form-sections/AppStoreSection';
@@ -16,6 +16,7 @@ export default function ClientDashboard() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeSection, setActiveSection] = useState('setup');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     loadClientData();
@@ -167,16 +168,22 @@ export default function ClientDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b sticky top-0 z-10">
+      <nav className="bg-white shadow-sm border-b sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-bold" style={{ color: '#e40033' }}>TILARY</span>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-xl font-bold text-gray-900">Formulário</h1>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+              <span className="text-xl sm:text-2xl font-bold" style={{ color: '#e40033' }}>TILARY</span>
+              <div className="hidden sm:block h-6 w-px bg-gray-300"></div>
+              <h1 className="hidden sm:block text-xl font-bold text-gray-900">Formulário</h1>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="hidden md:flex items-center gap-2">
                 <div className="text-right">
                   <p className="text-sm font-medium text-gray-900">{client.name}</p>
                   <p className="text-xs text-gray-500">{form.progress_percentage}% completo</p>
@@ -192,33 +199,66 @@ export default function ClientDashboard() {
                 </div>
               </div>
               {saving && (
-                <div className="flex items-center gap-2 text-sm" style={{ color: '#e40033' }}>
+                <div className="hidden sm:flex items-center gap-2 text-sm" style={{ color: '#e40033' }}>
                   <Save className="w-4 h-4 animate-pulse" />
-                  Salvando...
+                  <span className="hidden md:inline">Salvando...</span>
                 </div>
               )}
               <button
                 onClick={signOut}
-                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-2 sm:px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <LogOut className="w-4 h-4" />
-                Sair
+                <span className="hidden sm:inline">Sair</span>
               </button>
             </div>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-3">
-            <div className="bg-white rounded-xl shadow-sm p-4 sticky top-24">
-              <h3 className="text-sm font-semibold text-gray-500 uppercase mb-4">Seções</h3>
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-10" onClick={() => setMobileMenuOpen(false)}></div>
+      )}
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="md:hidden mb-4 p-3 bg-white rounded-lg shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-900">{client.name}</p>
+              <p className="text-xs text-gray-500">{form.progress_percentage}% completo</p>
+            </div>
+            <div className="w-24 bg-gray-200 rounded-full h-2">
+              <div
+                className="h-2 rounded-full transition-all"
+                style={{
+                  width: `${form.progress_percentage}%`,
+                  backgroundColor: '#e40033'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
+          <div className={`lg:col-span-3 ${mobileMenuOpen ? 'fixed inset-y-0 left-0 w-64 z-20 transform translate-x-0' : 'hidden lg:block'}`}>
+            <div className="bg-white rounded-xl shadow-sm p-4 lg:sticky lg:top-24 h-full lg:h-auto overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase">Seções</h3>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="lg:hidden p-1 rounded hover:bg-gray-100"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
               <nav className="space-y-2">
                 {sections.map((section) => (
                   <button
                     key={section.id}
-                    onClick={() => setActiveSection(section.id)}
+                    onClick={() => {
+                      setActiveSection(section.id);
+                      setMobileMenuOpen(false);
+                    }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                       activeSection === section.id
                         ? 'bg-blue-50 text-blue-700 font-medium'
@@ -226,7 +266,7 @@ export default function ClientDashboard() {
                     }`}
                   >
                     <span className="text-xl flex items-center justify-center">{section.icon}</span>
-                    <span>{section.label}</span>
+                    <span className="text-sm lg:text-base">{section.label}</span>
                   </button>
                 ))}
               </nav>
@@ -242,8 +282,8 @@ export default function ClientDashboard() {
             </div>
           </div>
 
-          <div className="col-span-9">
-            <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="lg:col-span-9">
+            <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
               {activeSection === 'status' && (
                 <ProjectStatusSection projectStatus={form.project_status || 'pending'} />
               )}

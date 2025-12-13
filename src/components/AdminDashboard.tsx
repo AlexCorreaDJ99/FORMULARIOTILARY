@@ -311,73 +311,73 @@ export default function AdminDashboard() {
       <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-bold" style={{ color: '#e40033' }}>TILARY</span>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-xl font-bold text-gray-900">Painel Administrativo</h1>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="text-xl sm:text-2xl font-bold" style={{ color: '#e40033' }}>TILARY</span>
+              <div className="hidden sm:block h-6 w-px bg-gray-300"></div>
+              <h1 className="hidden md:block text-xl font-bold text-gray-900">Painel Administrativo</h1>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">{profile?.name}</span>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="hidden sm:block text-sm text-gray-600">{profile?.name}</span>
               <button
                 onClick={() => setShowCreateAdminModal(true)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors border"
+                className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-lg transition-colors border"
                 style={{ color: '#e40033', borderColor: '#e40033' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(228, 0, 51, 0.05)'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 title="Cadastrar Administrador"
               >
                 <UserPlus className="w-4 h-4" />
-                Novo Admin
+                <span className="hidden sm:inline">Novo Admin</span>
               </button>
               <NotificationBell />
               <button
                 onClick={signOut}
-                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-2 sm:px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <LogOut className="w-4 h-4" />
-                Sair
+                <span className="hidden sm:inline">Sair</span>
               </button>
             </div>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-4 mb-6 border-b">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="flex gap-2 sm:gap-4 mb-6 border-b overflow-x-auto">
           <button
             onClick={() => setActiveTab('clients')}
-            className={`flex items-center gap-2 px-4 py-3 font-medium transition-all border-b-2 ${
+            className={`flex items-center gap-2 px-3 sm:px-4 py-3 font-medium transition-all border-b-2 whitespace-nowrap ${
               activeTab === 'clients'
                 ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-600 hover:text-gray-900'
             }`}
           >
             <Users className="w-5 h-5" />
-            Clientes
+            <span className="text-sm sm:text-base">Clientes</span>
           </button>
           <button
             onClick={() => setActiveTab('admins')}
-            className={`flex items-center gap-2 px-4 py-3 font-medium transition-all border-b-2 ${
+            className={`flex items-center gap-2 px-3 sm:px-4 py-3 font-medium transition-all border-b-2 whitespace-nowrap ${
               activeTab === 'admins'
                 ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-600 hover:text-gray-900'
             }`}
           >
             <Shield className="w-5 h-5" />
-            Administradores
+            <span className="text-sm sm:text-base">Administradores</span>
           </button>
         </div>
 
         {activeTab === 'clients' ? (
           <>
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Clientes</h2>
-                <p className="text-gray-600 mt-1">Gerencie os clientes e seus formulários</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Clientes</h2>
+                <p className="text-sm sm:text-base text-gray-600 mt-1">Gerencie os clientes e seus formulários</p>
               </div>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors"
+                className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
                 style={{ backgroundColor: '#e40033' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2002a'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e40033'}
@@ -388,7 +388,7 @@ export default function AdminDashboard() {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-gray-200 text-sm">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -636,33 +636,33 @@ export default function AdminDashboard() {
             </div>
 
             {totalClients > itemsPerPage && (
-              <div className="flex items-center justify-between mt-6 px-4">
-                <div className="text-sm text-gray-600">
+              <div className="flex flex-col sm:flex-row items-center justify-between mt-6 px-4 gap-4">
+                <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
                   Mostrando {((currentPage - 1) * itemsPerPage) + 1} a {Math.min(currentPage * itemsPerPage, totalClients)} de {totalClients} clientes
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="px-3 py-2 rounded-lg border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-1"
+                    className="px-3 py-2 rounded-lg border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-1 text-xs sm:text-sm"
                     style={{
                       color: currentPage === 1 ? '#9ca3af' : '#e40033',
                       borderColor: currentPage === 1 ? '#d1d5db' : '#e40033'
                     }}
                   >
                     <ChevronLeft className="w-4 h-4" />
-                    Anterior
+                    <span className="hidden sm:inline">Anterior</span>
                   </button>
                   <button
                     onClick={() => setCurrentPage(p => p + 1)}
                     disabled={currentPage >= Math.ceil(totalClients / itemsPerPage)}
-                    className="px-3 py-2 rounded-lg border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-1"
+                    className="px-3 py-2 rounded-lg border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors flex items-center gap-1 text-xs sm:text-sm"
                     style={{
                       color: currentPage >= Math.ceil(totalClients / itemsPerPage) ? '#9ca3af' : '#e40033',
                       borderColor: currentPage >= Math.ceil(totalClients / itemsPerPage) ? '#d1d5db' : '#e40033'
                     }}
                   >
-                    Próxima
+                    <span className="hidden sm:inline">Próxima</span>
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -673,13 +673,13 @@ export default function AdminDashboard() {
           <>
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Administradores</h2>
-                <p className="text-gray-600 mt-1">Gerencie os administradores do sistema</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Administradores</h2>
+                <p className="text-sm sm:text-base text-gray-600 mt-1">Gerencie os administradores do sistema</p>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
+            <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 text-sm">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -872,17 +872,17 @@ function ClientDetailsModal({ client, onClose }: { client: ClientWithForm; onClo
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
-          <h3 className="text-xl font-bold text-gray-900">Detalhes do Cliente</h3>
-          <div className="flex items-center gap-3">
+        <div className="sticky top-0 bg-white border-b px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900">Detalhes do Cliente</h3>
+          <div className="flex items-center gap-3 self-end sm:self-auto">
             {client.form?.status === 'completed' && (
               <button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
               >
                 <Download className="w-4 h-4" />
-                {downloading ? 'Gerando...' : 'Baixar ZIP'}
+                <span className="hidden sm:inline">{downloading ? 'Gerando...' : 'Baixar ZIP'}</span>
               </button>
             )}
             <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
@@ -891,8 +891,8 @@ function ClientDetailsModal({ client, onClose }: { client: ClientWithForm; onClo
           </div>
         </div>
 
-        <div className="p-6 space-y-6">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="p-4 sm:p-6 space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-gray-500">Nome</label>
               <p className="text-gray-900 mt-1">{client.name}</p>
@@ -988,7 +988,7 @@ function ClientDetailsModal({ client, onClose }: { client: ClientWithForm; onClo
                   <label className="text-sm font-medium text-gray-500 block mb-2">
                     {client.form.image_source === 'custom' ? 'Imagens Personalizadas Enviadas' : 'Imagens Enviadas'}
                   </label>
-                  <div className="grid grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                     {images.map((img) => (
                       <div key={img.id} className="border rounded p-2">
                         <img src={img.file_url} alt={img.file_name} className="w-full h-20 object-cover rounded" />

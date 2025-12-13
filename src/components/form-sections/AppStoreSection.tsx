@@ -49,14 +49,14 @@ export default function AppStoreSection({ form, onSave }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">App Store (iOS)</h2>
-          <p className="text-gray-600 mt-1">Informações e imagens para publicação na Apple App Store</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">App Store (iOS)</h2>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Informações e imagens para publicação na Apple App Store</p>
         </div>
         <button
           onClick={handleManualSave}
-          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors whitespace-nowrap"
           style={{ backgroundColor: '#e40033' }}
           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2002a'}
           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e40033'}

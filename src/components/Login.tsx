@@ -40,19 +40,19 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-rose-50 flex items-center justify-center px-4 py-8">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 sm:p-8">
+        <div className="text-center mb-6 sm:mb-8">
           <div className="mb-4">
-            <h1 className="text-5xl font-bold" style={{ color: '#e40033' }}>TILARY</h1>
+            <h1 className="text-4xl sm:text-5xl font-bold" style={{ color: '#e40033' }}>TILARY</h1>
           </div>
-          <p className="text-gray-600 mt-2">Sistema de Gestão de Conteúdo</p>
+          <p className="text-sm sm:text-base text-gray-600 mt-2">Sistema de Gestão de Conteúdo</p>
         </div>
 
         <div className="flex rounded-lg bg-gray-100 p-1 mb-6">
           <button
             onClick={() => setIsAdminLogin(false)}
-            className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+            className={`flex-1 py-2 px-3 sm:px-4 rounded-md font-medium transition-all text-sm sm:text-base ${
               !isAdminLogin
                 ? 'bg-white shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
@@ -63,7 +63,7 @@ export default function Login() {
           </button>
           <button
             onClick={() => setIsAdminLogin(true)}
-            className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+            className={`flex-1 py-2 px-3 sm:px-4 rounded-md font-medium transition-all text-sm sm:text-base ${
               isAdminLogin
                 ? 'bg-white shadow-sm'
                 : 'text-gray-600 hover:text-gray-900'
