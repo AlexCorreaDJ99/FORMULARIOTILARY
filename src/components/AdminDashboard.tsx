@@ -9,6 +9,7 @@ import EditAdminEmailModal from './EditAdminEmailModal';
 import NotificationBell from './NotificationBell';
 import NotesModal from './NotesModal';
 import ReviewFormModal from './ReviewFormModal';
+import RecalculateProgressButton from './RecalculateProgressButton';
 
 type ClientWithForm = Client & {
   form?: AppForm;
@@ -377,16 +378,19 @@ export default function AdminDashboard() {
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Clientes</h2>
                 <p className="text-sm sm:text-base text-gray-600 mt-1">Gerencie os clientes e seus formulários</p>
               </div>
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
-                style={{ backgroundColor: '#e40033' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2002a'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e40033'}
-              >
-                <Plus className="w-5 h-5" />
-                Novo Cliente
-              </button>
+              <div className="flex items-center gap-2">
+                <RecalculateProgressButton />
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
+                  style={{ backgroundColor: '#e40033' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#c2002a'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e40033'}
+                >
+                  <Plus className="w-5 h-5" />
+                  Novo Cliente
+                </button>
+              </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
@@ -919,7 +923,7 @@ function ClientDetailsModal({ client, onClose }: { client: ClientWithForm; onClo
         <div className="sticky top-0 bg-white border-b px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <h3 className="text-lg sm:text-xl font-bold text-gray-900">Detalhes do Cliente</h3>
           <div className="flex items-center gap-3 self-end sm:self-auto">
-            {client.form?.status === 'completed' && (
+            {(client.form?.status === 'completed' || client.form?.progress_percentage === 100) && (
               <button
                 onClick={handleDownload}
                 disabled={downloading}

@@ -22,6 +22,24 @@ export default function ClientDashboard() {
     loadClientData();
   }, [user]);
 
+  useEffect(() => {
+    if (!form?.id) return;
+
+    const checkForUpdates = setInterval(async () => {
+      const { data: updatedForm } = await supabase
+        .from('app_forms')
+        .select('images_uploaded')
+        .eq('id', form.id)
+        .single();
+
+      if (updatedForm && updatedForm.images_uploaded !== form.images_uploaded) {
+        await recalculateProgress();
+      }
+    }, 3000);
+
+    return () => clearInterval(checkForUpdates);
+  }, [form?.id, form?.images_uploaded]);
+
   const loadClientData = async () => {
     if (!user) return;
 
@@ -94,11 +112,40 @@ export default function ClientDashboard() {
 
     setSaving(true);
     try {
-      const updatedData = { ...form, ...updates };
-      const progress = calculateProgress(updatedData);
+      const { error } = await supabase
+        .from('app_forms')
+        .update({
+          ...updates,
+          last_activity_date: new Date().toISOString(),
+        })
+        .eq('id', form.id);
+
+      if (error) throw error;
+
+      await recalculateProgress();
+    } catch (error) {
+      console.error('Error saving form:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const recalculateProgress = async () => {
+    if (!form || !client) return;
+
+    try {
+      const { data: updatedForm } = await supabase
+        .from('app_forms')
+        .select('*')
+        .eq('id', form.id)
+        .single();
+
+      if (!updatedForm) return;
+
+      const progress = calculateProgress(updatedForm);
       const oldProgress = form.progress_percentage || 0;
 
-      let status = form.status;
+      let status = updatedForm.status;
       if (progress === 100) {
         status = 'completed';
       } else if (progress > 0) {
@@ -108,10 +155,8 @@ export default function ClientDashboard() {
       const { error } = await supabase
         .from('app_forms')
         .update({
-          ...updates,
           progress_percentage: progress,
           status,
-          last_activity_date: new Date().toISOString(),
         })
         .eq('id', form.id);
 
@@ -131,11 +176,9 @@ export default function ClientDashboard() {
         });
       }
 
-      setForm({ ...form, ...updates, progress_percentage: progress, status });
+      setForm({ ...updatedForm, progress_percentage: progress, status });
     } catch (error) {
-      console.error('Error saving form:', error);
-    } finally {
-      setSaving(false);
+      console.error('Error recalculating progress:', error);
     }
   };
 
