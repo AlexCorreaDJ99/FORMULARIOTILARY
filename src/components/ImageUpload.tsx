@@ -202,12 +202,31 @@ export default function ImageUpload({
       }
 
       await loadImages();
+      await checkAndUpdateImagesUploaded();
     } catch (err) {
       console.error('Error uploading:', err);
       setError(err instanceof Error ? err.message : 'Erro ao fazer upload');
     } finally {
       setUploading(false);
       e.target.value = '';
+    }
+  };
+
+  const checkAndUpdateImagesUploaded = async () => {
+    try {
+      const { data: allImages } = await supabase
+        .from('form_images')
+        .select('*')
+        .eq('form_id', formId);
+
+      if (allImages && allImages.length > 0) {
+        await supabase
+          .from('app_forms')
+          .update({ images_uploaded: true })
+          .eq('id', formId);
+      }
+    } catch (err) {
+      console.error('Error updating images_uploaded flag:', err);
     }
   };
 
@@ -223,6 +242,18 @@ export default function ImageUpload({
 
       if (error) throw error;
       await loadImages();
+
+      const { data: remainingImages } = await supabase
+        .from('form_images')
+        .select('*')
+        .eq('form_id', formId);
+
+      if (!remainingImages || remainingImages.length === 0) {
+        await supabase
+          .from('app_forms')
+          .update({ images_uploaded: false })
+          .eq('id', formId);
+      }
     } catch (err) {
       console.error('Error deleting image:', err);
       setError('Erro ao excluir imagem');

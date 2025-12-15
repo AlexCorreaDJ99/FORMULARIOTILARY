@@ -43,6 +43,11 @@ export type AppForm = {
   play_store_owner?: 'tilary' | 'client';
   app_store_owner?: 'tilary' | 'client';
   image_source?: 'tilary' | 'custom';
+  images_uploaded?: boolean;
+  review_status?: 'pending' | 'approved' | 'rejected';
+  review_feedback?: string;
+  reviewed_at?: string;
+  reviewed_by?: string;
   last_activity_date?: string;
   driver_app_name?: string;
   passenger_app_name?: string;

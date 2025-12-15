@@ -72,15 +72,21 @@ export default function ClientDashboard() {
       'appstore_passenger_description',
       'driver_terms',
       'passenger_terms',
-      'image_source',
     ];
 
-    const filled = fields.filter((field) => {
+    let filled = fields.filter((field) => {
       const value = formData[field as keyof AppForm];
       return value && String(value).trim().length > 0;
     }).length;
 
-    return Math.round((filled / fields.length) * 100);
+    if (formData.image_source === 'tilary') {
+      filled += 1;
+    } else if (formData.image_source === 'custom' && formData.images_uploaded) {
+      filled += 1;
+    }
+
+    const total = fields.length + 1;
+    return Math.round((filled / total) * 100);
   };
 
   const handleSaveForm = async (updates: Partial<AppForm>) => {
@@ -285,7 +291,11 @@ export default function ClientDashboard() {
           <div className="lg:col-span-9">
             <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
               {activeSection === 'status' && (
-                <ProjectStatusSection projectStatus={form.project_status || 'pending'} />
+                <ProjectStatusSection
+                  projectStatus={form.project_status || 'pending'}
+                  reviewStatus={form.review_status}
+                  reviewFeedback={form.review_feedback}
+                />
               )}
               {activeSection === 'setup' && (
                 <SetupSection form={form} onSave={handleSaveForm} />

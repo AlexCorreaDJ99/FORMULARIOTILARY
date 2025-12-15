@@ -8,6 +8,7 @@ import EditAdminPasswordModal from './EditAdminPasswordModal';
 import EditAdminEmailModal from './EditAdminEmailModal';
 import NotificationBell from './NotificationBell';
 import NotesModal from './NotesModal';
+import ReviewFormModal from './ReviewFormModal';
 
 type ClientWithForm = Client & {
   form?: AppForm;
@@ -35,6 +36,7 @@ export default function AdminDashboard() {
   const [meetingDate, setMeetingDate] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
   const [notesClient, setNotesClient] = useState<ClientWithForm | null>(null);
+  const [reviewClient, setReviewClient] = useState<ClientWithForm | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalClients, setTotalClients] = useState(0);
   const itemsPerPage = 40;
@@ -413,6 +415,9 @@ export default function AdminDashboard() {
                       Reunião
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Revisão
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status Cliente
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -581,6 +586,29 @@ export default function AdminDashboard() {
                           <span className="text-xs text-gray-400">N/A</span>
                         )}
                       </td>
+                      <td className="px-6 py-4">
+                        {client.form?.id ? (
+                          <button
+                            onClick={() => setReviewClient(client)}
+                            className={`px-2 py-1 text-xs rounded-lg transition-colors ${
+                              client.form?.review_status === 'approved'
+                                ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                : client.form?.review_status === 'rejected'
+                                ? 'bg-red-100 text-red-800 hover:bg-red-200'
+                                : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                            }`}
+                            title="Revisar formulário"
+                          >
+                            {client.form?.review_status === 'approved'
+                              ? 'Aprovado'
+                              : client.form?.review_status === 'rejected'
+                              ? 'Rejeitado'
+                              : 'Pendente'}
+                          </button>
+                        ) : (
+                          <span className="text-xs text-gray-400">N/A</span>
+                        )}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           client.status === 'active'
@@ -626,7 +654,7 @@ export default function AdminDashboard() {
                   ))}
                   {clients.length === 0 && (
                     <tr>
-                      <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                      <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                         Nenhum cliente cadastrado ainda
                       </td>
                     </tr>
@@ -808,6 +836,22 @@ export default function AdminDashboard() {
           onSuccess={() => {
             setNotesClient(null);
             loadClients();
+          }}
+        />
+      )}
+
+      {reviewClient && reviewClient.form?.id && (
+        <ReviewFormModal
+          clientId={reviewClient.id}
+          clientName={reviewClient.name}
+          formId={reviewClient.form.id}
+          currentStatus={reviewClient.form.review_status}
+          currentFeedback={reviewClient.form.review_feedback}
+          onClose={() => setReviewClient(null)}
+          onSuccess={() => {
+            setReviewClient(null);
+            loadClients();
+            alert('Revisão salva com sucesso!');
           }}
         />
       )}

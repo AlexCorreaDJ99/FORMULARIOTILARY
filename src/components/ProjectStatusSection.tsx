@@ -1,7 +1,9 @@
-import { CheckCircle, Circle, Clock } from 'lucide-react';
+import { CheckCircle, Circle, Clock, AlertTriangle } from 'lucide-react';
 
 interface ProjectStatusSectionProps {
   projectStatus: string;
+  reviewStatus?: 'pending' | 'approved' | 'rejected';
+  reviewFeedback?: string;
 }
 
 type StatusStep = {
@@ -43,7 +45,7 @@ const statusSteps: StatusStep[] = [
   },
 ];
 
-export default function ProjectStatusSection({ projectStatus }: ProjectStatusSectionProps) {
+export default function ProjectStatusSection({ projectStatus, reviewStatus, reviewFeedback }: ProjectStatusSectionProps) {
   const currentStatusIndex = statusSteps.findIndex(step => step.id === projectStatus);
 
   const getStepStatus = (stepIndex: number) => {
@@ -63,6 +65,41 @@ export default function ProjectStatusSection({ projectStatus }: ProjectStatusSec
           Acompanhe o progresso do desenvolvimento do seu aplicativo em tempo real
         </p>
       </div>
+
+      {reviewStatus === 'rejected' && reviewFeedback && (
+        <div className="mb-6 p-4 bg-red-50 border-2 border-red-500 rounded-xl">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 mt-0.5">
+              <AlertTriangle className="w-6 h-6 text-red-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-red-900 mb-2">Formulário Precisa de Correções</h3>
+              <p className="text-red-800 text-sm leading-relaxed whitespace-pre-wrap">
+                {reviewFeedback}
+              </p>
+              <p className="text-red-700 text-xs mt-3 font-medium">
+                Por favor, corrija os pontos mencionados acima e salve as alterações. Seu progresso será atualizado automaticamente.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {reviewStatus === 'approved' && (
+        <div className="mb-6 p-4 bg-green-50 border-2 border-green-500 rounded-xl">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 mt-0.5">
+              <CheckCircle className="w-6 h-6 text-green-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-green-900 mb-1">Formulário Aprovado!</h3>
+              <p className="text-green-800 text-sm leading-relaxed">
+                Seu formulário foi revisado e aprovado. O desenvolvimento está em andamento!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-400 rounded-xl">
         <div className="flex items-start gap-3">
