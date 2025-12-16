@@ -44,7 +44,11 @@ export default function AppStoreSection({ form, onSave }: Props) {
   };
 
   const handleImageSourceChange = async (source: 'tilary' | 'custom') => {
-    await onSave({ image_source: source });
+    if (source === 'custom') {
+      await onSave({ image_source: source, images_uploaded: false });
+    } else {
+      await onSave({ image_source: source });
+    }
   };
 
   return (
