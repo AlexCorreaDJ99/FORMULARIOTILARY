@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase, Client, AppForm } from '../lib/supabase';
-import { Plus, LogOut, Users, Eye, Trash2, RefreshCw, Download, UserPlus, Shield, Key, Calendar, X, Check, CheckCircle, FileText, Mail, ChevronLeft, ChevronRight } from 'lucide-react';
+import { supabase, Client, AppForm, ActivityLog, logAdminAction } from '../lib/supabase';
+import { Plus, LogOut, Users, Eye, Trash2, RefreshCw, Download, UserPlus, Shield, Key, Calendar, X, Check, CheckCircle, FileText, Mail, ChevronLeft, ChevronRight, ClipboardList } from 'lucide-react';
 import CreateClientModal from './CreateClientModal';
 import CreateAdminModal from './CreateAdminModal';
 import EditAdminPasswordModal from './EditAdminPasswordModal';
@@ -24,7 +24,7 @@ type AdminProfile = {
 
 export default function AdminDashboard() {
   const { signOut, profile } = useAuth();
-  const [activeTab, setActiveTab] = useState<'clients' | 'admins'>('clients');
+  const [activeTab, setActiveTab] = useState<'clients' | 'admins' | 'logs'>('clients');
   const [clients, setClients] = useState<ClientWithForm[]>([]);
   const [admins, setAdmins] = useState<AdminProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,11 @@ export default function AdminDashboard() {
   const [reviewClient, setReviewClient] = useState<ClientWithForm | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalClients, setTotalClients] = useState(0);
+  const [logs, setLogs] = useState<ActivityLog[]>([]);
+  const [logsPage, setLogsPage] = useState(1);
+  const [totalLogs, setTotalLogs] = useState(0);
   const itemsPerPage = 40;
+  const logsPerPage = 50;
 
   useEffect(() => {
     loadClients();
@@ -104,6 +108,36 @@ export default function AdminDashboard() {
     }
   };
 
+  const loadLogs = async () => {
+    try {
+      const { count } = await supabase
+        .from('admin_activity_logs')
+        .select('*', { count: 'exact', head: true });
+
+      setTotalLogs(count || 0);
+
+      const from = (logsPage - 1) * logsPerPage;
+      const to = from + logsPerPage - 1;
+
+      const { data, error } = await supabase
+        .from('admin_activity_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .range(from, to);
+
+      if (error) throw error;
+      setLogs(data || []);
+    } catch (error) {
+      console.error('Error loading logs:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'logs') {
+      loadLogs();
+    }
+  }, [activeTab, logsPage]);
+
   const handleToggleStatus = async (clientId: string, currentStatus: string) => {
     try {
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
@@ -121,12 +155,24 @@ export default function AdminDashboard() {
 
   const handleUpdateProjectStatus = async (formId: string, newStatus: string) => {
     try {
+      const client = clients.find(c => c.form?.id === formId);
+
       const { error } = await supabase
         .from('app_forms')
         .update({ project_status: newStatus })
         .eq('id', formId);
 
       if (error) throw error;
+
+      await logAdminAction(
+        'project_status_update',
+        `Alterou status do projeto para: ${newStatus}`,
+        'form',
+        formId,
+        client?.name,
+        { new_status: newStatus }
+      );
+
       loadClients();
     } catch (error) {
       console.error('Error updating project status:', error);
@@ -152,6 +198,8 @@ export default function AdminDashboard() {
     }
 
     try {
+      const client = clients.find(c => c.form?.id === formId);
+
       const { error } = await supabase
         .from('app_forms')
         .update({
@@ -162,6 +210,16 @@ export default function AdminDashboard() {
         .eq('id', formId);
 
       if (error) throw error;
+
+      await logAdminAction(
+        'meeting_scheduled',
+        `Agendou reunião para ${new Date(meetingDate).toLocaleDateString('pt-BR')} às ${meetingTime}`,
+        'form',
+        formId,
+        client?.name,
+        { meeting_date: meetingDate, meeting_time: meetingTime }
+      );
+
       handleCancelEditMeeting();
       loadClients();
     } catch (error) {
@@ -174,6 +232,8 @@ export default function AdminDashboard() {
     if (!confirm('Deseja remover esta reunião?')) return;
 
     try {
+      const client = clients.find(c => c.form?.id === formId);
+
       const { error } = await supabase
         .from('app_forms')
         .update({
@@ -184,6 +244,15 @@ export default function AdminDashboard() {
         .eq('id', formId);
 
       if (error) throw error;
+
+      await logAdminAction(
+        'meeting_removed',
+        'Removeu agendamento de reunião',
+        'form',
+        formId,
+        client?.name
+      );
+
       loadClients();
     } catch (error) {
       console.error('Error removing meeting:', error);
@@ -195,6 +264,8 @@ export default function AdminDashboard() {
     if (!confirm('Tem certeza que deseja excluir este cliente? Todos os dados e arquivos relacionados serão removidos permanentemente.')) return;
 
     try {
+      const client = clients.find(c => c.id === clientId);
+
       const { data: formData } = await supabase
         .from('app_forms')
         .select('id')
@@ -259,6 +330,15 @@ export default function AdminDashboard() {
           });
         }
       }
+
+      await logAdminAction(
+        'client_deleted',
+        `Excluiu o cliente: ${client?.name || 'Desconhecido'}`,
+        'client',
+        clientId,
+        client?.name,
+        { email: client?.email }
+      );
 
       if (clients.length === 1 && currentPage > 1) {
         setCurrentPage(currentPage - 1);
@@ -369,9 +449,20 @@ export default function AdminDashboard() {
             <Shield className="w-5 h-5" />
             <span className="text-sm sm:text-base">Administradores</span>
           </button>
+          <button
+            onClick={() => setActiveTab('logs')}
+            className={`flex items-center gap-2 px-3 sm:px-4 py-3 font-medium transition-all border-b-2 whitespace-nowrap ${
+              activeTab === 'logs'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <ClipboardList className="w-5 h-5" />
+            <span className="text-sm sm:text-base">Log de Alterações</span>
+          </button>
         </div>
 
-        {activeTab === 'clients' ? (
+        {activeTab === 'clients' && (
           <>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div>
@@ -709,7 +800,9 @@ export default function AdminDashboard() {
               </div>
             )}
           </>
-        ) : (
+        )}
+
+        {activeTab === 'admins' && (
           <>
             <div className="flex justify-between items-center mb-6">
               <div>
@@ -782,6 +875,126 @@ export default function AdminDashboard() {
                 </tbody>
               </table>
             </div>
+          </>
+        )}
+
+        {activeTab === 'logs' && (
+          <>
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Log de Alterações</h2>
+                <p className="text-sm sm:text-base text-gray-600 mt-1">Histórico de ações dos administradores</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 text-sm">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Data/Hora
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Administrador
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Ação
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Descrição
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Alvo
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {logs.map((log) => (
+                    <tr key={log.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {new Date(log.created_at).toLocaleDateString('pt-BR')}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {new Date(log.created_at).toLocaleTimeString('pt-BR')}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{log.admin_name}</div>
+                        <div className="text-xs text-gray-500">{log.admin_email}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          log.action_type.includes('delete') ? 'bg-red-100 text-red-800' :
+                          log.action_type.includes('create') ? 'bg-green-100 text-green-800' :
+                          log.action_type.includes('update') || log.action_type.includes('review') ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {log.action_type.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900 max-w-md">{log.action_description}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {log.target_name && (
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{log.target_name}</div>
+                            {log.target_type && (
+                              <div className="text-xs text-gray-500">{log.target_type}</div>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {logs.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                        Nenhum log encontrado
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {totalLogs > logsPerPage && (
+              <div className="mt-6 flex items-center justify-between">
+                <div className="text-sm text-gray-600">
+                  Mostrando {((logsPage - 1) * logsPerPage) + 1} a {Math.min(logsPage * logsPerPage, totalLogs)} de {totalLogs} registros
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setLogsPage(p => Math.max(1, p - 1))}
+                    disabled={logsPage === 1}
+                    className="flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      color: logsPage === 1 ? '#9ca3af' : '#e40033',
+                      borderColor: logsPage === 1 ? '#d1d5db' : '#e40033'
+                    }}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span className="hidden sm:inline">Anterior</span>
+                  </button>
+                  <span className="px-4 py-2 text-sm text-gray-700">
+                    Página {logsPage} de {Math.ceil(totalLogs / logsPerPage)}
+                  </span>
+                  <button
+                    onClick={() => setLogsPage(p => Math.min(Math.ceil(totalLogs / logsPerPage), p + 1))}
+                    disabled={logsPage >= Math.ceil(totalLogs / logsPerPage)}
+                    className="flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{
+                      color: logsPage >= Math.ceil(totalLogs / logsPerPage) ? '#9ca3af' : '#e40033',
+                      borderColor: logsPage >= Math.ceil(totalLogs / logsPerPage) ? '#d1d5db' : '#e40033'
+                    }}
+                  >
+                    <span className="hidden sm:inline">Próxima</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

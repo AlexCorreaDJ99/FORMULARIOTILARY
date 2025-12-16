@@ -90,3 +90,42 @@ export type Notification = {
   read: boolean;
   created_at: string;
 };
+
+export type ActivityLog = {
+  id: string;
+  admin_id: string;
+  admin_name: string;
+  admin_email: string;
+  action_type: string;
+  action_description: string;
+  target_type?: string;
+  target_id?: string;
+  target_name?: string;
+  metadata?: Record<string, any>;
+  created_at: string;
+};
+
+export async function logAdminAction(
+  actionType: string,
+  actionDescription: string,
+  targetType?: string,
+  targetId?: string,
+  targetName?: string,
+  metadata?: Record<string, any>
+) {
+  try {
+    const { data, error } = await supabase.rpc('log_admin_action', {
+      p_action_type: actionType,
+      p_action_description: actionDescription,
+      p_target_type: targetType || null,
+      p_target_id: targetId || null,
+      p_target_name: targetName || null,
+      p_metadata: metadata || {},
+    });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error logging admin action:', error);
+  }
+}

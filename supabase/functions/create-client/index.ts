@@ -124,6 +124,21 @@ Deno.serve(async (req: Request) => {
 
     if (formError) throw formError;
 
+    const { data: adminProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("name, email")
+      .eq("id", user.id)
+      .single();
+
+    await supabaseAdmin.rpc("log_admin_action", {
+      p_action_type: "client_created",
+      p_action_description: `Criou novo cliente: ${name}`,
+      p_target_type: "client",
+      p_target_id: clientData.id,
+      p_target_name: name,
+      p_metadata: { email, access_code: accessCode },
+    });
+
     return new Response(
       JSON.stringify({
         success: true,

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, logAdminAction } from '../lib/supabase';
 import { CheckCircle, XCircle, X } from 'lucide-react';
 
 type Props = {
@@ -113,6 +113,15 @@ export default function ReviewFormModal({
           message: `Seu formulário foi aprovado! 🎉`,
         });
       }
+
+      await logAdminAction(
+        `form_review_${status}`,
+        `${status === 'approved' ? 'Aprovou' : 'Rejeitou'} o formulário de ${clientName}`,
+        'form',
+        formId,
+        clientName,
+        { review_status: status, feedback: feedback.trim() || null }
+      );
 
       onSuccess();
     } catch (error) {
