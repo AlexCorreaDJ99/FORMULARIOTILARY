@@ -95,6 +95,8 @@ export default function ReviewFormModal({
           reviewed_by: user.id,
           progress_percentage: finalProgress,
           status: formStatus,
+          corrections_completed: false,
+          admin_notified_of_changes: false,
         })
         .eq('id', formId);
 

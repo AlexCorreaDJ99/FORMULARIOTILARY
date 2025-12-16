@@ -592,23 +592,31 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-6 py-4">
                         {client.form?.id ? (
-                          <button
-                            onClick={() => setReviewClient(client)}
-                            className={`px-2 py-1 text-xs rounded-lg transition-colors ${
-                              client.form?.review_status === 'approved'
-                                ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                          <div className="flex flex-col gap-1">
+                            <button
+                              onClick={() => setReviewClient(client)}
+                              className={`px-2 py-1 text-xs rounded-lg transition-colors ${
+                                client.form?.review_status === 'approved'
+                                  ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                  : client.form?.review_status === 'rejected'
+                                  ? 'bg-red-100 text-red-800 hover:bg-red-200'
+                                  : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                              }`}
+                              title="Revisar formulário"
+                            >
+                              {client.form?.review_status === 'approved'
+                                ? 'Aprovado'
                                 : client.form?.review_status === 'rejected'
-                                ? 'bg-red-100 text-red-800 hover:bg-red-200'
-                                : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                            }`}
-                            title="Revisar formulário"
-                          >
-                            {client.form?.review_status === 'approved'
-                              ? 'Aprovado'
-                              : client.form?.review_status === 'rejected'
-                              ? 'Rejeitado'
-                              : 'Pendente'}
-                          </button>
+                                ? 'Rejeitado'
+                                : 'Pendente'}
+                            </button>
+                            {client.form?.review_status === 'rejected' && client.form?.corrections_completed && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                                <CheckCircle className="w-3 h-3" />
+                                Cliente concluiu
+                              </span>
+                            )}
+                          </div>
                         ) : (
                           <span className="text-xs text-gray-400">N/A</span>
                         )}

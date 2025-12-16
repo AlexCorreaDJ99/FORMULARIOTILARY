@@ -48,7 +48,11 @@ export type AppForm = {
   review_feedback?: string;
   reviewed_at?: string;
   reviewed_by?: string;
+  corrections_completed?: boolean;
+  corrections_completed_at?: string;
+  admin_notified_of_changes?: boolean;
   last_activity_date?: string;
+  last_client_update?: string;
   driver_app_name?: string;
   passenger_app_name?: string;
   support_email?: string;

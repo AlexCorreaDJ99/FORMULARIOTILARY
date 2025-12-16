@@ -117,12 +117,39 @@ export default function ClientDashboard() {
         .update({
           ...updates,
           last_activity_date: new Date().toISOString(),
+          last_client_update: new Date().toISOString(),
+          admin_notified_of_changes: false,
         })
         .eq('id', form.id);
 
       if (error) throw error;
 
       await recalculateProgress();
+
+      if (form.review_status === 'rejected' || form.review_status === 'approved') {
+        const { data: admins } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('is_admin', true);
+
+        if (admins && admins.length > 0) {
+          for (const admin of admins) {
+            await supabase.from('notifications').insert({
+              client_id: admin.id,
+              type: 'form_updated',
+              message: `${client.name} fez alterações no formulário`,
+            });
+          }
+        }
+
+        await supabase
+          .from('app_forms')
+          .update({
+            admin_notified_of_changes: true,
+            corrections_completed: false,
+          })
+          .eq('id', form.id);
+      }
     } catch (error) {
       console.error('Error saving form:', error);
     } finally {
@@ -163,22 +190,73 @@ export default function ClientDashboard() {
       if (error) throw error;
 
       if (progress === 100 && oldProgress < 100) {
-        await supabase.from('notifications').insert({
-          client_id: client.id,
-          type: 'form_completed',
-          message: `${client.name} completou o formulário (100%)`,
-        });
+        const { data: admins } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('is_admin', true);
+
+        if (admins && admins.length > 0) {
+          for (const admin of admins) {
+            await supabase.from('notifications').insert({
+              client_id: admin.id,
+              type: 'form_completed',
+              message: `${client.name} completou o formulário (100%)`,
+            });
+          }
+        }
       } else if (progress > oldProgress && progress >= 25 && oldProgress < 25) {
-        await supabase.from('notifications').insert({
-          client_id: client.id,
-          type: 'form_updated',
-          message: `${client.name} atualizou o formulário (${progress}%)`,
-        });
+        const { data: admins } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('is_admin', true);
+
+        if (admins && admins.length > 0) {
+          for (const admin of admins) {
+            await supabase.from('notifications').insert({
+              client_id: admin.id,
+              type: 'form_updated',
+              message: `${client.name} atualizou o formulário (${progress}%)`,
+            });
+          }
+        }
       }
 
       setForm({ ...updatedForm, progress_percentage: progress, status });
     } catch (error) {
       console.error('Error recalculating progress:', error);
+    }
+  };
+
+  const handleMarkCorrectionsComplete = async () => {
+    if (!form || !client) return;
+
+    try {
+      await supabase
+        .from('app_forms')
+        .update({
+          corrections_completed: true,
+          corrections_completed_at: new Date().toISOString(),
+        })
+        .eq('id', form.id);
+
+      const { data: admins } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('is_admin', true);
+
+      if (admins && admins.length > 0) {
+        for (const admin of admins) {
+          await supabase.from('notifications').insert({
+            client_id: admin.id,
+            type: 'form_updated',
+            message: `${client.name} marcou as correções como concluídas`,
+          });
+        }
+      }
+
+      setForm({ ...form, corrections_completed: true });
+    } catch (error) {
+      console.error('Error marking corrections complete:', error);
     }
   };
 
@@ -338,6 +416,8 @@ export default function ClientDashboard() {
                   projectStatus={form.project_status || 'pending'}
                   reviewStatus={form.review_status}
                   reviewFeedback={form.review_feedback}
+                  correctionsCompleted={form.corrections_completed}
+                  onMarkCorrectionsComplete={handleMarkCorrectionsComplete}
                 />
               )}
               {activeSection === 'setup' && (

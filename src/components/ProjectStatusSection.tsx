@@ -1,9 +1,12 @@
-import { CheckCircle, Circle, Clock, AlertTriangle } from 'lucide-react';
+import { CheckCircle, Circle, Clock, AlertTriangle, Check } from 'lucide-react';
+import { useState } from 'react';
 
 interface ProjectStatusSectionProps {
   projectStatus: string;
   reviewStatus?: 'pending' | 'approved' | 'rejected';
   reviewFeedback?: string;
+  correctionsCompleted?: boolean;
+  onMarkCorrectionsComplete?: () => Promise<void>;
 }
 
 type StatusStep = {
@@ -45,8 +48,25 @@ const statusSteps: StatusStep[] = [
   },
 ];
 
-export default function ProjectStatusSection({ projectStatus, reviewStatus, reviewFeedback }: ProjectStatusSectionProps) {
+export default function ProjectStatusSection({
+  projectStatus,
+  reviewStatus,
+  reviewFeedback,
+  correctionsCompleted,
+  onMarkCorrectionsComplete
+}: ProjectStatusSectionProps) {
+  const [marking, setMarking] = useState(false);
   const currentStatusIndex = statusSteps.findIndex(step => step.id === projectStatus);
+
+  const handleMarkComplete = async () => {
+    if (!onMarkCorrectionsComplete) return;
+    setMarking(true);
+    try {
+      await onMarkCorrectionsComplete();
+    } finally {
+      setMarking(false);
+    }
+  };
 
   const getStepStatus = (stepIndex: number) => {
     if (stepIndex < currentStatusIndex) return 'completed';
@@ -77,9 +97,27 @@ export default function ProjectStatusSection({ projectStatus, reviewStatus, revi
               <p className="text-red-800 text-sm leading-relaxed whitespace-pre-wrap">
                 {reviewFeedback}
               </p>
-              <p className="text-red-700 text-xs mt-3 font-medium">
-                Por favor, corrija os pontos mencionados acima e salve as alterações. Seu progresso será atualizado automaticamente.
-              </p>
+              <div className="mt-4 flex items-center gap-3">
+                <p className="text-red-700 text-xs font-medium flex-1">
+                  Por favor, corrija os pontos mencionados acima e salve as alterações. Seu progresso será atualizado automaticamente.
+                </p>
+                {!correctionsCompleted && onMarkCorrectionsComplete && (
+                  <button
+                    onClick={handleMarkComplete}
+                    disabled={marking}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                  >
+                    <Check className="w-4 h-4" />
+                    {marking ? 'Notificando...' : 'Marcar como Feito'}
+                  </button>
+                )}
+                {correctionsCompleted && (
+                  <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg text-sm font-medium">
+                    <CheckCircle className="w-4 h-4" />
+                    Correções concluídas
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
