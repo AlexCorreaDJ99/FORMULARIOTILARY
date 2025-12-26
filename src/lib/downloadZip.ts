@@ -126,27 +126,28 @@ Criado em: ${new Date(form.created_at).toLocaleString('pt-BR')}
 
   zip.file('dados_formulario.txt', formDataText);
 
-  const imagesByCategory: Record<string, FormImage[]> = {};
-  images.forEach((img) => {
-    const key = `${img.app_type}_${img.store_type}_${img.image_type}`;
-    if (!imagesByCategory[key]) {
-      imagesByCategory[key] = [];
-    }
-    imagesByCategory[key].push(img);
-  });
+  for (const img of images) {
+    try {
+      const response = await fetch(img.file_url);
+      const blob = await response.blob();
 
-  for (const [category, categoryImages] of Object.entries(imagesByCategory)) {
-    const [appType, storeType, imageType] = category.split('_');
-    const folderName = `imagens/${appType}/${storeType}/${imageType}`;
+      let fileName: string;
+      let folderName: string;
 
-    for (const img of categoryImages) {
-      try {
-        const response = await fetch(img.file_url);
-        const blob = await response.blob();
-        zip.file(`${folderName}/${img.file_name}`, blob);
-      } catch (error) {
-        console.error(`Error downloading image ${img.file_name}:`, error);
+      if (img.image_type === 'logo_1024' || img.image_type === 'logo_352') {
+        folderName = `imagens/${img.app_type}/${img.store_type}/logos`;
+        const dimensions = img.image_type === 'logo_1024' ? '1024x1024' : '352x68';
+        const extension = img.file_name.split('.').pop();
+        const baseName = img.file_name.replace(/\.[^/.]+$/, '');
+        fileName = `${baseName}_${dimensions}.${extension}`;
+      } else {
+        folderName = `imagens/${img.app_type}/${img.store_type}/${img.image_type}`;
+        fileName = img.file_name;
       }
+
+      zip.file(`${folderName}/${fileName}`, blob);
+    } catch (error) {
+      console.error(`Error downloading image ${img.file_name}:`, error);
     }
   }
 
