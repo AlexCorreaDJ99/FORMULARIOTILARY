@@ -55,12 +55,8 @@ export default function ReviewFormModal({
       const requiredImages = {
         driver_playstore_logo_1024: false,
         driver_playstore_logo_352: false,
-        driver_appstore_logo_1024: false,
-        driver_appstore_logo_352: false,
         passenger_playstore_logo_1024: false,
         passenger_playstore_logo_352: false,
-        passenger_appstore_logo_1024: false,
-        passenger_appstore_logo_352: false,
         driver_playstore_feature: false,
         driver_appstore_feature: false,
         passenger_playstore_feature: false,
