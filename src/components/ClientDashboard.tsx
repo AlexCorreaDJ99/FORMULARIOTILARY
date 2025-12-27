@@ -226,12 +226,18 @@ export default function ClientDashboard() {
         status = 'in_progress';
       }
 
+      const updateData: any = {
+        progress_percentage: progress,
+        status,
+      };
+
+      if (progress === 100 && oldProgress < 100 && !updatedForm.completion_date) {
+        updateData.completion_date = new Date().toISOString().split('T')[0];
+      }
+
       const { error } = await supabase
         .from('app_forms')
-        .update({
-          progress_percentage: progress,
-          status,
-        })
+        .update(updateData)
         .eq('id', form.id);
 
       if (error) throw error;
@@ -268,7 +274,12 @@ export default function ClientDashboard() {
         }
       }
 
-      setForm({ ...updatedForm, progress_percentage: progress, status });
+      setForm({
+        ...updatedForm,
+        progress_percentage: progress,
+        status,
+        ...(updateData.completion_date && { completion_date: updateData.completion_date })
+      });
     } catch (error) {
       console.error('Error recalculating progress:', error);
     }
@@ -304,22 +315,6 @@ export default function ClientDashboard() {
       setForm({ ...form, corrections_completed: true });
     } catch (error) {
       console.error('Error marking corrections complete:', error);
-    }
-  };
-
-  const handleUpdateCompletionDate = async (date: string) => {
-    if (!form) return;
-
-    try {
-      await supabase
-        .from('app_forms')
-        .update({ completion_date: date })
-        .eq('id', form.id);
-
-      setForm({ ...form, completion_date: date });
-    } catch (error) {
-      console.error('Error updating completion date:', error);
-      throw error;
     }
   };
 
@@ -480,9 +475,7 @@ export default function ClientDashboard() {
                   reviewStatus={form.review_status}
                   reviewFeedback={form.review_feedback}
                   correctionsCompleted={form.corrections_completed}
-                  completionDate={form.completion_date}
                   onMarkCorrectionsComplete={handleMarkCorrectionsComplete}
-                  onUpdateCompletionDate={handleUpdateCompletionDate}
                 />
               )}
               {activeSection === 'setup' && (
