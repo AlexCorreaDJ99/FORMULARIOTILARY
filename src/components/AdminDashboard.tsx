@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, Client, AppForm, ActivityLog, ClientNotification, logAdminAction } from '../lib/supabase';
-import { Plus, LogOut, Users, Eye, Trash2, RefreshCw, Download, UserPlus, Shield, Key, Calendar, X, Check, CheckCircle, FileText, Mail, ChevronLeft, ChevronRight, ClipboardList, CreditCard as Edit2, Bell, BellRing, Pencil } from 'lucide-react';
+import { Plus, LogOut, Users, Eye, Trash2, RefreshCw, Download, UserPlus, Shield, Key, Calendar, X, Check, CheckCircle, FileText, Mail, ChevronLeft, ChevronRight, ClipboardList, CreditCard as Edit2, Bell, BellRing, Pencil, Search } from 'lucide-react';
 import CreateClientModal from './CreateClientModal';
 import CreateAdminModal from './CreateAdminModal';
 import EditAdminPasswordModal from './EditAdminPasswordModal';
@@ -59,6 +59,7 @@ export default function AdminDashboard() {
   const [filterFormStatus, setFilterFormStatus] = useState<string>('all');
   const [filterProjectStatus, setFilterProjectStatus] = useState<string>('all');
   const [sortByCompletionDate, setSortByCompletionDate] = useState<string>('none');
+  const [filterClientName, setFilterClientName] = useState<string>('');
   const [selectedClientIds, setSelectedClientIds] = useState<string[]>([]);
   const [selectionMode, setSelectionMode] = useState(false);
   const itemsPerPage = 40;
@@ -68,7 +69,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     loadClients();
     loadAdmins();
-  }, [currentPage, filterFormStatus, filterProjectStatus, sortByCompletionDate]);
+  }, [currentPage, filterFormStatus, filterProjectStatus, sortByCompletionDate, filterClientName]);
 
   const loadClients = async () => {
     try {
@@ -112,6 +113,12 @@ export default function AdminDashboard() {
 
       if (filterProjectStatus !== 'all') {
         filteredClients = filteredClients.filter(c => c.form?.project_status === filterProjectStatus);
+      }
+
+      if (filterClientName.trim()) {
+        filteredClients = filteredClients.filter(c =>
+          c.name.toLowerCase().includes(filterClientName.trim().toLowerCase())
+        );
       }
 
       if (sortByCompletionDate === 'oldest') {
@@ -844,7 +851,24 @@ export default function AdminDashboard() {
 
             <div className="mb-6 bg-white rounded-xl shadow-sm p-4">
               <h3 className="text-sm font-semibold text-gray-700 mb-3">Filtros e Ordenação</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Buscar por Nome</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      value={filterClientName}
+                      onChange={(e) => {
+                        setFilterClientName(e.target.value);
+                        setCurrentPage(1);
+                      }}
+                      placeholder="Digite o nome..."
+                      className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-medium text-gray-600 mb-1">Status Formulário</label>
                   <select
@@ -901,12 +925,13 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {(filterFormStatus !== 'all' || filterProjectStatus !== 'all' || sortByCompletionDate !== 'none') && (
+              {(filterFormStatus !== 'all' || filterProjectStatus !== 'all' || sortByCompletionDate !== 'none' || filterClientName.trim()) && (
                 <button
                   onClick={() => {
                     setFilterFormStatus('all');
                     setFilterProjectStatus('all');
                     setSortByCompletionDate('none');
+                    setFilterClientName('');
                     setCurrentPage(1);
                   }}
                   className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium"
